@@ -1,5 +1,9 @@
-#from pypdf import PdfReader
-#import mdpdf
+import pypandoc
+import os
+from pypdf import PdfMerger
+
+
+print("Test")
 
 SEPERATOR = '.'
 DATE_FORMAT = "YYYY.MM.DD" # Input Date Format (4 Ys)
@@ -118,6 +122,36 @@ def makePrintable(date: list):
         date[YEAR_SLOT] = toFourDigit(date[YEAR_SLOT])
         return date[0] + SEPERATOR + date[1] + SEPERATOR + date[2] + FORMAT
 
+def generateFilenames(start_date: list, end_date: list):
+    # returns a list of all filenames
+    filenames = []
+    if dateBeforeDate(start_date, end_date):
+        filenames.append(makePrintable(start_date.copy()))
+        while start_date != end_date:
+            start_date = addOneDay(start_date)
+            filenames.append(makePrintable(start_date.copy()))
+    else: raise ValueError("The start date is after the end date.")
+    return filenames
+
+def convertFiles(filenames: list):
+    i = 0
+    for filename in filenames:
+        output = pypandoc.convert_file(f'.\\{filename}', 'pdf', outputfile=f".\\{i}.pdf")
+        assert output == ""
+        i += 1
+
+def mergePDFs(length: int):
+    merger = PdfMerger()
+
+    for i in range(length):
+        merger.append(str(i) + ".pdf")
+
+    merger.write("result.pdf")
+    merger.close()
+
+def deleteTempFiles(length: int):
+    for i in range(length):
+        os.remove(f".\\{i}.pdf")
 
 if __name__ == "__main__":
     startDate = input("Start Date: ")
@@ -126,9 +160,8 @@ if __name__ == "__main__":
     endDate = input("End Date: ")
     endDate = initDate(endDate)
 
-    if dateBeforeDate(startDate, endDate):
-        print(makePrintable(startDate.copy()))
-        while startDate != endDate:
-            startDate = addOneDay(startDate)
-            print(makePrintable(startDate.copy()))
-    else: raise ValueError("The start date is after the end date.")
+
+    listOfFiles = generateFilenames(startDate, endDate)
+    convertFiles(listOfFiles)
+    mergePDFs(len(listOfFiles))
+    #deleteTempFiles(len(listOfFiles))
