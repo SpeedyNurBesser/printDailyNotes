@@ -1,3 +1,5 @@
+# This fork is basically just a merger. It merges all '.pdf' files of DATE_FORMAT.pdf between two given dates
+
 import pypandoc
 import os
 from pypdf import PdfMerger
@@ -5,7 +7,7 @@ from pypdf import PdfMerger
 
 SEPERATOR = '.'
 DATE_FORMAT = "YYYY.MM.DD" # Input Date Format (4 Ys)
-FORMAT = '.md' # You did read the description of this repo, did you? It should always be '.md'
+FORMAT = '.pdf' # Seemingly we need pdf this time
 
 DAY_DICT = {1:31, 3:31, 4:30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10:31, 11: 30, 12: 31}
 DATE_FORMAT = DATE_FORMAT.split(SEPERATOR)
@@ -131,25 +133,14 @@ def generateFilenames(start_date: list, end_date: list):
     else: raise ValueError("The start date is after the end date.")
     return filenames
 
-def convertFiles(filenames: list):
-    i = 0
-    for filename in filenames:
-        output = pypandoc.convert_file(f'.\\{filename}', 'pdf', outputfile=f".\\{i}.pdf")
-        assert output == ""
-        i += 1
-
-def mergePDFs(length: int):
+def mergePDFs(filenames):
     merger = PdfMerger()
 
-    for i in range(length):
-        merger.append(str(i) + ".pdf")
+    for filename in filenames:
+        merger.append(filename)
 
     merger.write("result.pdf")
     merger.close()
-
-def deleteTempFiles(length: int):
-    for i in range(length):
-        os.remove(f".\\{i}.pdf")
 
 if __name__ == "__main__":
     startDate = input("Start Date: ")
@@ -160,6 +151,4 @@ if __name__ == "__main__":
 
 
     listOfFiles = generateFilenames(startDate, endDate)
-    convertFiles(listOfFiles)
-    mergePDFs(len(listOfFiles))
-    #deleteTempFiles(len(listOfFiles))
+    mergePDFs(listOfFiles)
