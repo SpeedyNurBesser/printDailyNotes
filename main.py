@@ -1,7 +1,5 @@
-# This fork is basically just a merger. It merges all '.pdf' files of DATE_FORMAT.pdf between two given dates
+# This fork is basically just a pdf merger. It merges all '.pdf' files of DATE_FORMAT.pdf between two given dates
 
-import pypandoc
-import os
 from pypdf import PdfMerger
 
 
