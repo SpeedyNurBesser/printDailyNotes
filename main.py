@@ -3,8 +3,6 @@ import os
 from pypdf import PdfMerger
 
 
-print("Test")
-
 SEPERATOR = '.'
 DATE_FORMAT = "YYYY.MM.DD" # Input Date Format (4 Ys)
 FORMAT = '.md' # You did read the description of this repo, did you? It should always be '.md'
